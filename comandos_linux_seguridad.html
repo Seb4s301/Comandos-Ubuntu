@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comandos Linux/Ubuntu - Proyecto de Seguridad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background-color: #f5f7ff;
+        }
+        .cmd-code {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-left: 3px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .prerequisito {
+            background: #fff3cd;
+            padding: 10px;
+            border-left: 3px solid #ffc107;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .nota {
+            background: #d1ecf1;
+            padding: 10px;
+            border-left: 3px solid #17a2b8;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .importante {
+            background: #f8d7da;
+            padding: 10px;
+            border-left: 3px solid #dc3545;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background: white;
+            border: none;
+            font-size: 1em;
+            transition: all 0.3s;
+            color: #667eea;
+            font-weight: 500;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-bottom: 3px solid #667eea;
+        }
+        .tab:hover {
+            background: #f5f7ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .ejemplo-bloque {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+        .ejemplo-bloque strong {
+            color: #667eea;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Comandos Linux/Ubuntu</h1>
+            <p>Implementación de Seguridad, Criptografía y Control de Accesos</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Proyecto: Sistemas Operativos - UTP</p>
+        </div>
+
+        <div class="content">
+            <!-- SECCIÓN 1: CIFRADO DE DISCO -->
+            <div class="section">
+                <h2 class="section-title">1️⃣ CIFRADO DE DISCO COMPLETO (LUKS)</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">sudo lsblk</div></td>
+                            <td>Listar dispositivos de almacenamiento disponibles</td>
+                            <td>Ejecutar antes de encriptar para identificar la partición correcta (ej: /dev/sda2)</td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario con permisos sudo</div>
+                                <div class="prerequisito">✓ Acceso físico o administrativo al sistema</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo cryptsetup luksFormat /dev/sda2</div></td>
+                            <td>Formatea una partición con cifrado LUKS y establece una contraseña maestra</td>
+                            <td>
+                                En TechCorp: Aplicado a laptops de auditores para proteger datos en reposo
+                                <div class="ejemplo-bloque">
+                                    <strong>Paso:</strong> El sistema solicita confirmación (escribir "yes"), luego pide una contraseña fuerte (mín. 8 caracteres)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ sudo lsblk (para identificar /dev/sda2)</div>
+                                <div class="importante">⚠️ ADVERTENCIA: Borra todos los datos de la partición</div>
+                                <div class="importante">⚠️ Hacer backup antes de ejecutar</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo cryptsetup luksOpen /dev/sda2 disco_seguro</div></td>
+                            <td>Desbloquea una partición LUKS cifrada y la monta como "disco_seguro"</td>
+                            <td>
+                                Ejecutado al arrancar el sistema o cuando se necesita acceder a los datos
+                                <div class="ejemplo-bloque">
+                                    <strong>Flujo:</strong> El sistema solicita la contraseña maestra → Se desbloquea → Aparece en /dev/mapper/disco_seguro
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Partición previamente formateada con luksFormat</div>
+                                <div class="prerequisito">✓ Conocer la contraseña LUKS</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo mkfs.ext4 /dev/mapper/disco_seguro</div></td>
+                            <td>Crea un sistema de archivos ext4 dentro de la partición LUKS desbloquada</td>
+                            <td>
+                                Después de desbloquear LUKS, se necesita crear un sistema de archivos para poder guardar datos
+                                <div class="ejemplo-bloque">
+                                    <strong>Secuencia:</strong> luksOpen → mkfs.ext4 → mount → usar
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ luksOpen ya ejecutado</div>
+                                <div class="prerequisito">✓ /dev/mapper/disco_seguro debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo mount /dev/mapper/disco_seguro /mnt/datos_seguros</div></td>
+                            <td>Monta la partición cifrada en un punto de acceso del sistema de archivos</td>
+                            <td>
+                                Permite acceder a los datos cifrados desde el directorio /mnt/datos_seguros
+                                <div class="ejemplo-bloque">
+                                    <strong>En TechCorp:</strong> Los auditores acceden a reportes financieros desde /mnt/datos_seguros
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ mkfs.ext4 ya ejecutado</div>
+                                <div class="prerequisito">✓ Crear directorio: sudo mkdir -p /mnt/datos_seguros</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo umount /mnt/datos_seguros</div></td>
+                            <td>Desmonta la partición cifrada (necesario antes de cerrar LUKS)</td>
+                            <td>
+                                Ejecutar cuando se finaliza el trabajo con datos cifrados
+                                <div class="nota">Libera recursos y prepara para desconectar luksClose</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ No debe haber archivos abiertos de ese directorio</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo cryptsetup luksClose disco_seguro</div></td>
+                            <td>Cierra y bloquea la partición LUKS (vuelve a cifrarla)</td>
+                            <td>
+                                Cierra el acceso a los datos, volviéndolos inaccesibles hasta el próximo luksOpen
+                                <div class="nota">Se debe ejecutar después de umount</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ umount /dev/mapper/disco_seguro</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ejemplo-bloque">
+                    <strong>Flujo Completo para TechCorp:</strong><br>
+                    1. sudo lsblk<br>
+                    2. sudo cryptsetup luksFormat /dev/sda2<br>
+                    3. sudo cryptsetup luksOpen /dev/sda2 disco_seguro<br>
+                    4. sudo mkfs.ext4 /dev/mapper/disco_seguro<br>
+                    5. sudo mount /dev/mapper/disco_seguro /mnt/datos_seguros<br>
+                    6. [Trabajar con datos]<br>
+                    7. sudo umount /mnt/datos_seguros<br>
+                    8. sudo cryptsetup luksClose disco_seguro
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: CONTROL DE ACCESOS (ACL) -->
+            <div class="section">
+                <h2 class="section-title">2️⃣ CONTROL DE ACCESOS (ACL - Access Control Lists)</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">getfacl /ruta/archivo</div></td>
+                            <td>Visualiza los permisos ACL actuales de un archivo o directorio</td>
+                            <td>
+                                Verificar qué usuarios tienen acceso a un recurso
+                                <div class="ejemplo-bloque">
+                                    <strong>En TechCorp:</strong> getfacl /srv/datos/reportes
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo/directorio debe existir</div>
+                                <div class="prerequisito">✓ Tener permiso de lectura en el elemento padre</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">setfacl -m u:usuario:rwx /ruta</div></td>
+                            <td>Asigna permisos ACL específicos a un usuario individual (r=read, w=write, x=execute)</td>
+                            <td>
+                                Permite control granular de accesos sin modificar permisos tradicionales
+                                <div class="ejemplo-bloque">
+                                    <strong>Caso TechCorp:</strong><br>
+                                    setfacl -m u:gerente:rwx /srv/datos/reportes<br>
+                                    (Solo gerente tiene rwx, otros usuarios no)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe existir: id usuario</div>
+                                <div class="prerequisito">✓ Tener permisos sudo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">setfacl -m g:grupo:rx /ruta</div></td>
+                            <td>Asigna permisos ACL a un grupo específico</td>
+                            <td>
+                                Aplicar permisos a múltiples usuarios agrupados
+                                <div class="ejemplo-bloque">
+                                    <strong>Ejemplo:</strong> setfacl -m g:auditores:rx /srv/datos/reportes<br>
+                                    (Todos en grupo 'auditores' pueden leer y ejecutar)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Grupo debe existir: getent group grupo</div>
+                                <div class="prerequisito">✓ Usuarios deben estar en el grupo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">setfacl -m u:usuario:- /ruta</div></td>
+                            <td>Revoca todos los permisos de un usuario</td>
+                            <td>
+                                Denegar acceso completo a un usuario específico
+                                <div class="nota">El símbolo "-" significa sin permisos</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe estar en ACL actual</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">setfacl -x u:usuario /ruta</div></td>
+                            <td>Elimina completamente la entrada ACL de un usuario</td>
+                            <td>
+                                Remover usuario del control de acceso (vuelve a permisos por defecto)
+                                <div class="nota">Diferencia: "-" = sin permisos, "-x" = remove entry</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe estar en la ACL</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">setfacl -R -m u:usuario:rwx /ruta</div></td>
+                            <td>Aplica permisos ACL de forma RECURSIVA a un directorio y sus subdirectorios</td>
+                            <td>
+                                Aplicar permisos en toda una estructura de carpetas
+                                <div class="ejemplo-bloque">
+                                    <strong>Caso real:</strong><br>
+                                    setfacl -R -m u:gerente:rwx /srv/datos/<br>
+                                    (Aplica permisos a todas las carpetas dentro)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Parámetro -R (recursivo)</div>
+                                <div class="prerequisito">✓ Tener permisos en directorio padre</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">chmod 755 /ruta && setfacl -m u:usuario:rwx /ruta</div></td>
+                            <td>Combina permisos tradicionales (chmod) con ACL granulares</td>
+                            <td>
+                                Establecer una base de permisos y luego refinar con ACL
+                                <div class="nota">Primero chmod define base, luego setfacl agrega excepciones</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Ser propietario o root</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ejemplo-bloque">
+                    <strong>Secuencia Típica para Gestión de Reportes en TechCorp:</strong><br>
+                    1. sudo mkdir -p /srv/datos/reportes<br>
+                    2. sudo chmod 700 /srv/datos/reportes (permiso base)<br>
+                    3. getfacl /srv/datos/reportes (verificar estado)<br>
+                    4. sudo setfacl -m u:gerente:rwx /srv/datos/reportes<br>
+                    5. sudo setfacl -m g:auditores:rx /srv/datos/reportes<br>
+                    6. getfacl /srv/datos/reportes (verificar cambios)
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: CIFRADO CON GPG -->
+            <div class="section">
+                <h2 class="section-title">3️⃣ CIFRADO Y FIRMA DIGITAL CON GPG</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">gpg --version</div></td>
+                            <td>Verifica si GPG está instalado y muestra la versión</td>
+                            <td>Comando de diagnóstico previo</td>
+                            <td>
+                                <div class="prerequisito">✓ Sistema Linux/Ubuntu</div>
+                                <div class="nota">Si no aparece: sudo apt-get install gnupg</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo apt-get install gnupg</div></td>
+                            <td>Instala la herramienta GPG en Ubuntu (si no está)</td>
+                            <td>Instalación inicial en un sistema sin GPG</td>
+                            <td>
+                                <div class="prerequisito">✓ Acceso a internet</div>
+                                <div class="prerequisito">✓ Permisos sudo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --gen-key</div></td>
+                            <td>Genera un nuevo par de claves (pública/privada) para el usuario</td>
+                            <td>
+                                Crear identidad de usuario en GPG
+                                <div class="ejemplo-bloque">
+                                    <strong>Proceso interactivo:</strong><br>
+                                    • Tipo de clave (RSA)<br>
+                                    • Tamaño (2048 o 4096 bits)<br>
+                                    • Nombre, email, comentario<br>
+                                    • Contraseña de la clave privada
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ GPG instalado</div>
+                                <div class="nota">Se ejecuta una sola vez por usuario</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg -c archivo.pdf</div></td>
+                            <td>Cifra un archivo de forma SIMÉTRICA con una contraseña (sin generar claves)</td>
+                            <td>
+                                En TechCorp: Auditores cifran reportes rápidamente
+                                <div class="ejemplo-bloque">
+                                    <strong>Uso:</strong> gpg -c reporte_financiero.pdf<br>
+                                    • Solicita contraseña<br>
+                                    • Genera reporte_financiero.pdf.gpg
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo debe existir</div>
+                                <div class="prerequisito">✓ GPG instalado</div>
+                                <div class="nota">No requiere generar claves</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg -d archivo.pdf.gpg</div></td>
+                            <td>Descifra un archivo cifrado simétricamente</td>
+                            <td>
+                                Recuperar contenido de archivos cifrados
+                                <div class="ejemplo-bloque">
+                                    <strong>Flujo:</strong><br>
+                                    gpg -d reporte_financiero.pdf.gpg<br>
+                                    [Pide contraseña]<br>
+                                    [Muestra contenido desencriptado]
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Conocer la contraseña</div>
+                                <div class="prerequisito">✓ Archivo .gpg debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg -d archivo.pdf.gpg > archivo_descifrado.pdf</div></td>
+                            <td>Descifra y guarda el contenido en un nuevo archivo</td>
+                            <td>
+                                Crear archivo legible a partir del cifrado
+                                <div class="nota">El ">" redirige la salida a un archivo</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Descifrado previo funcionando</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg -r usuario -e archivo.pdf</div></td>
+                            <td>Cifra un archivo ASIMÉTRICAMENTE para un usuario específico</td>
+                            <td>
+                                Enviar archivos seguros a otros usuarios
+                                <div class="ejemplo-bloque">
+                                    <strong>Caso:</strong> gpg -r gerente -e reporte.pdf<br>
+                                    (Solo la clave pública de 'gerente' puede descifrar)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Clave pública del usuario debe estar importada</div>
+                                <div class="prerequisito">✓ gpg --gen-key ejecutado previamente</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg -s archivo.pdf</div></td>
+                            <td>Firma digitalmente un archivo (prueba autenticidad y no-repudio)</td>
+                            <td>
+                                Garantizar que un documento proviene de una fuente confiable
+                                <div class="nota">Crea archivo.pdf.gpg con firma digital</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ gpg --gen-key ejecutado</div>
+                                <div class="prerequisito">✓ Contraseña de clave privada</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --verify archivo.pdf.gpg</div></td>
+                            <td>Verifica la firma digital de un archivo</td>
+                            <td>
+                                Confirmar que un documento no ha sido alterado
+                                <div class="nota">Muestra: Good signature / Bad signature</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Clave pública del firmante debe estar en el sistema</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --list-keys</div></td>
+                            <td>Lista todas las claves públicas disponibles en el sistema</td>
+                            <td>
+                                Verificar usuarios con los que se puede cifrar
+                                <div class="nota">Muestra: email, fingerprint, fecha de creación</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ gpg --gen-key ejecutado previamente</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --list-secret-keys</div></td>
+                            <td>Lista todas las claves PRIVADAS del usuario actual</td>
+                            <td>
+                                Identificar claves disponibles para descifrar/firmar
+                                <div class="nota">Información sensible - no compartir</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Ser el propietario de las claves</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --export -a usuario > clave_publica.asc</div></td>
+                            <td>Exporta la clave pública de un usuario en formato ASCII</td>
+                            <td>
+                                Compartir clave pública con otros para que cifren archivos para ti
+                                <div class="ejemplo-bloque">
+                                    <strong>Distribución:</strong><br>
+                                    gpg --export -a gerente > gerente_clave_publica.asc<br>
+                                    [Enviar archivo .asc a otros usuarios]
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe existir en gpg --list-keys</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">gpg --import clave_publica.asc</div></td>
+                            <td>Importa una clave pública de otro usuario</td>
+                            <td>
+                                Agregar claves de otros usuarios para cifrar archivos para ellos
+                                <div class="nota">Después: gpg --list-keys mostrará la nueva clave</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo .asc debe existir</div>
+                                <div class="prerequisito">✓ Tener archivo de clave pública válida</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ejemplo-bloque">
+                    <strong>Flujo Completo para Cifrado en TechCorp:</strong><br><br>
+                    <strong>Paso 1: Preparación (primera vez)</strong><br>
+                    1. gpg --version<br>
+                    2. gpg --gen-key (cada usuario)<br><br>
+                    
+                    <strong>Paso 2: Compartir Claves</strong><br>
+                    3. gpg --list-keys<br>
+                    4. gpg --export -a gerente > gerente.asc<br>
+                    5. [Enviar gerente.asc a auditores]<br>
+                    6. gpg --import gerente.asc<br><br>
+                    
+                    <strong>Paso 3: Cifrar Reportes</strong><br>
+                    7. gpg -c reporte_financiero.pdf<br>
+                    8. [Introduce contraseña]<br>
+                    9. [Genera reporte_financiero.pdf.gpg]<br><br>
+                    
+                    <strong>Paso 4: Descifrar Reportes</strong><br>
+                    10. gpg -d reporte_financiero.pdf.gpg<br>
+                    11. [Introduce contraseña]<br>
+                    12. [Accedes al contenido]
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: HASH Y VERIFICACIÓN DE INTEGRIDAD -->
+            <div class="section">
+                <h2 class="section-title">4️⃣ FUNCIONES HASH Y VERIFICACIÓN DE INTEGRIDAD</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">md5sum archivo</div></td>
+                            <td>Calcula el hash MD5 de un archivo (DEPRECATED - no usar en producción)</td>
+                            <td>Verificación básica de integridad (principalmente educativo ahora)</td>
+                            <td>
+                                <div class="importante">⚠️ MD5 es débil - usar SHA256 en su lugar</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sha256sum archivo</div></td>
+                            <td>Calcula el hash SHA-256 de un archivo (estándar moderno)</td>
+                            <td>
+                                Verificar integridad de archivos importantes
+                                <div class="ejemplo-bloque">
+                                    <strong>Uso en TechCorp:</strong><br>
+                                    sha256sum reporte_financiero.pdf<br>
+                                    [Output: abc123...xyz reporte_financiero.pdf]
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo debe existir</div>
+                                <div class="nota">Disponible por defecto en Ubuntu</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sha256sum archivo > archivo.sha256</div></td>
+                            <td>Guarda el hash SHA-256 en un archivo de verificación</td>
+                            <td>
+                                Crear registro de integridad para auditoría
+                                <div class="nota">Se puede comparar después con sha256sum -c</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo original debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sha256sum -c archivo.sha256</div></td>
+                            <td>Verifica que el archivo actual coincida con su hash almacenado</td>
+                            <td>
+                                Detectar si un archivo ha sido modificado
+                                <div class="ejemplo-bloque">
+                                    <strong>Output:</strong><br>
+                                    reporte_financiero.pdf: OK ✓<br>
+                                    o<br>
+                                    reporte_financiero.pdf: FAILED ✗
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo .sha256 debe existir</div>
+                                <div class="prerequisito">✓ Archivo original en el mismo directorio</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sha512sum archivo</div></td>
+                            <td>Calcula el hash SHA-512 (más seguro que SHA-256)</td>
+                            <td>
+                                Máximo nivel de seguridad en verificación
+                                <div class="nota">Recomendado para datos ultra-sensibles</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">openssl dgst -sha256 archivo</div></td>
+                            <td>Alternativa: calcula hash SHA-256 usando OpenSSL</td>
+                            <td>Herramienta más versátil que sha256sum</td>
+                            <td>
+                                <div class="prerequisito">✓ OpenSSL instalado</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ejemplo-bloque">
+                    <strong>Flujo de Integridad en TechCorp:</strong><br>
+                    1. sha256sum reporte_financiero.pdf > reporte.sha256<br>
+                    2. [Guardar reporte.sha256 en lugar seguro]<br>
+                    3. [Después de transferir el archivo...]<br>
+                    4. sha256sum -c reporte.sha256<br>
+                    5. [Verificar: OK significa que no ha sido alterado]
+                </div>
+            </div>
+
+            <!-- SECCIÓN 5: AUTENTICACIÓN Y CONTRASEÑAS -->
+            <div class="section">
+                <h2 class="section-title">5️⃣ AUTENTICACIÓN Y GESTIÓN DE CONTRASEÑAS</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">sudo useradd -m usuario_nuevo</div></td>
+                            <td>Crea un nuevo usuario en el sistema</td>
+                            <td>
+                                Crear usuarios para auditores, gerentes, etc.
+                                <div class="ejemplo-bloque">
+                                    <strong>En TechCorp:</strong><br>
+                                    sudo useradd -m gerente<br>
+                                    sudo useradd -m auditor1
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Permisos sudo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo passwd usuario</div></td>
+                            <td>Establece o cambia la contraseña de un usuario</td>
+                            <td>
+                                Definir contraseña segura con hash automático
+                                <div class="nota">El sistema aplica automáticamente salt y hash</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe existir</div>
+                                <div class="prerequisito">✓ Permisos sudo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo usermod -aG grupo usuario</div></td>
+                            <td>Agrega un usuario a un grupo (para ACL y permisos)</td>
+                            <td>
+                                Asignar usuarios a grupos para gestión de accesos
+                                <div class="ejemplo-bloque">
+                                    <strong>Ejemplo:</strong><br>
+                                    sudo usermod -aG auditores auditor1<br>
+                                    (auditor1 ahora hereda permisos del grupo 'auditores')
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe existir</div>
+                                <div class="prerequisito">✓ Grupo debe existir: sudo groupadd auditores</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">sudo groupadd grupo_nuevo</div></td>
+                            <td>Crea un nuevo grupo</td>
+                            <td>
+                                Agrupar usuarios para simplificar permisos
+                                <div class="ejemplo-bloque">
+                                    <strong>En TechCorp:</strong><br>
+                                    sudo groupadd auditores<br>
+                                    sudo groupadd gerentes
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Permisos sudo</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">id usuario</div></td>
+                            <td>Muestra UID, GID y grupos de un usuario</td>
+                            <td>
+                                Verificar membresía en grupos
+                                <div class="nota">Útil para confirmar que setfacl funcionó correctamente</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Usuario debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">cat /etc/shadow</div></td>
+                            <td>Muestra archivo con contraseñas hasheadas (lectura solo root)</td>
+                            <td>
+                                Auditoría: verificar cómo se almacenan contraseñas
+                                <div class="importante">⚠️ Datos ALTAMENTE sensibles - solo administradores</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Permisos root (sudo)</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="ejemplo-bloque">
+                    <strong>Flujo de Configuración de Usuarios en TechCorp:</strong><br>
+                    1. sudo groupadd auditores<br>
+                    2. sudo groupadd gerentes<br>
+                    3. sudo useradd -m auditor1<br>
+                    4. sudo useradd -m gerente<br>
+                    5. sudo passwd auditor1<br>
+                    6. sudo passwd gerente<br>
+                    7. sudo usermod -aG auditores auditor1<br>
+                    8. sudo usermod -aG gerentes gerente<br>
+                    9. id auditor1 (verificar membresía)<br>
+                    10. [Luego aplicar ACL a directorios con setfacl]
+                </div>
+            </div>
+
+            <!-- SECCIÓN 6: HERRAMIENTAS CRIPTOGRÁFICAS ADICIONALES -->
+            <div class="section">
+                <h2 class="section-title">6️⃣ HERRAMIENTAS CRIPTOGRÁFICAS: OpenSSL</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Comando</th>
+                            <th style="width: 20%;">Función</th>
+                            <th style="width: 30%;">Cómo se Aplica</th>
+                            <th style="width: 30%;">Comandos Previos / Requisitos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="cmd-code">openssl version</div></td>
+                            <td>Muestra versión de OpenSSL instalada</td>
+                            <td>Diagnóstico previo de disponibilidad</td>
+                            <td>
+                                <div class="prerequisito">✓ OpenSSL instalado</div>
+                                <div class="nota">Típicamente pre-instalado en Ubuntu</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">openssl enc -aes-256-cbc -S -P -in archivo -out archivo.enc</div></td>
+                            <td>Cifra un archivo con AES-256 en modo CBC (criptografía simétrica)</td>
+                            <td>
+                                Cifrar archivos con algoritmo fuerte
+                                <div class="ejemplo-bloque">
+                                    <strong>Variante interactiva:</strong><br>
+                                    openssl enc -aes-256-cbc -e -in reporte.pdf -out reporte.pdf.enc<br>
+                                    [Pide contraseña]<br>
+                                    [Crea reporte.pdf.enc]
+                                </div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ OpenSSL instalado</div>
+                                <div class="prerequisito">✓ Archivo de entrada debe existir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">openssl enc -aes-256-cbc -d -in archivo.enc -out archivo</div></td>
+                            <td>Descifra un archivo previamente cifrado con AES-256</td>
+                            <td>
+                                Recuperar contenido de archivos cifrados
+                                <div class="nota">El parámetro -d = decrypt</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Archivo .enc debe existir</div>
+                                <div class="prerequisito">✓ Conocer la contraseña</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">openssl req -x509 -newkey rsa:4096 -keyout clave.key -out cert.crt -days 365</div></td>
+                            <td>Genera un certificado X.509 auto-firmado y su clave privada</td>
+                            <td>
+                                Crear certificados para HTTPS/TLS en servidores
+                                <div class="nota">Válido por 365 días</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ OpenSSL instalado</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="cmd-code">openssl s_client -connect servidor:443</div></td>
+                            <td>Verifica conexión SSL/TLS a un servidor remoto</td>
+                            <td>
+                                Validar que HTTPS funciona correctamente
+                                <div class="nota">Muestra cadena de certificados y detalles TLS</div>
+                            </td>
+                            <td>
+                                <div class="prerequisito">✓ Conexión a internet</div>
+                                <div class="prerequisito">✓ Servidor debe estar activo</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECCIÓN 7: RESUMEN Y TABLA COMPARATIVA -->
+            <div class="section">
+                <h2 class="section-title">📊 RESUMEN COMPARATIVO: Seleccionar la Herramienta Correcta</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Necesidad</th>
+                            <th style="width: 20%;">Herramienta</th>
+                            <th style="width: 30%;">Ventajas</th>
+                            <th style="width: 30%;">Caso de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cifrar disco completo</strong></td>
+                            <td>LUKS (cryptsetup)</td>
+                            <td>✓ Cifrado completo<br>✓ Protección contra robo de hardware<br>✓ Automático en arranque</td>
+                            <td>Laptops de auditores en TechCorp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Control de acceso granular</strong></td>
+                            <td>ACL (setfacl)</td>
+                            <td>✓ Permisos individualizados<br>✓ Control por usuario/grupo<br>✓ Más flexible que chmod</td>
+                            <td>Compartir reportes específicos solo a gerentes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cifrar archivos individuales</strong></td>
+                            <td>GPG (gpg -c)</td>
+                            <td>✓ Portátil<br>✓ Sin generación de claves<br>✓ Compatible en cualquier sistema</td>
+                            <td>Cifrar reportes antes de enviar por email</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cifrado asimétrico (compartir claves)</strong></td>
+                            <td>GPG (gpg -r)</td>
+                            <td>✓ Intercambio seguro de claves<br>✓ No requiere canal seguro pre-existente<br>✓ Infraestructura PKI</td>
+                            <td>Empresa A envía datos encriptados a Empresa B</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Verificar integridad</strong></td>
+                            <td>SHA-256</td>
+                            <td>✓ Huella única del archivo<br>✓ Detecta manipulación<br>✓ Estándar moderno</td>
+                            <td>Auditoría: confirmar que reportes no han sido alterados</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Almacenar contraseñas seguras</strong></td>
+                            <td>Sistema Linux (hash + salt)</td>
+                            <td>✓ Automático en /etc/shadow<br>✓ Hash irreversible<br>✓ Salt previene ataques</td>
+                            <td>Sistema de login de usuarios</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SECCIÓN 8: GUÍA RÁPIDA -->
+            <div class="section">
+                <h2 class="section-title">⚡ GUÍA RÁPIDA: FLUJO COMPLETO PARA TECHCORP</h2>
+                
+                <div style="background: #f0f4ff; padding: 20px; border-radius: 5px; border-left: 4px solid #667eea;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Día 1: Configuración Inicial</h3>
+                    
+                    <strong>1. Crear usuarios y grupos:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+sudo groupadd auditores<br>
+sudo groupadd gerentes<br>
+sudo useradd -m auditor1 auditor2<br>
+sudo useradd -m gerente<br>
+sudo passwd auditor1 auditor2 gerente
+                    </div>
+
+                    <strong>2. Preparar estructura de almacenamiento:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+sudo mkdir -p /srv/datos/reportes<br>
+sudo chmod 700 /srv/datos/reportes
+                    </div>
+
+                    <strong>3. Aplicar ACL para control de acceso:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+sudo setfacl -m u:gerente:rwx /srv/datos/reportes<br>
+sudo setfacl -m g:auditores:rx /srv/datos/reportes<br>
+getfacl /srv/datos/reportes
+                    </div>
+
+                    <strong>4. Preparar cifrado de disco:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+sudo lsblk<br>
+sudo cryptsetup luksFormat /dev/sda2<br>
+sudo cryptsetup luksOpen /dev/sda2 disco_seguro<br>
+sudo mkfs.ext4 /dev/mapper/disco_seguro<br>
+sudo mount /dev/mapper/disco_seguro /mnt/datos_seguros
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 20px 0 15px;">Día 2: Uso Diario</h3>
+
+                    <strong>5. Generar claves GPG (cada usuario):</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+gpg --gen-key<br>
+# [Responder preguntas interactivas]<br>
+gpg --list-keys
+                    </div>
+
+                    <strong>6. Cifrar un reporte:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+gpg -c reporte_financiero.pdf<br>
+# [Introduce contraseña]<br>
+# Resultado: reporte_financiero.pdf.gpg
+                    </div>
+
+                    <strong>7. Guardar hash para verificación:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+sha256sum reporte_financiero.pdf > reporte.sha256
+                    </div>
+
+                    <strong>8. Descifrar cuando se recibe:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+gpg -d reporte_financiero.pdf.gpg > reporte_descifrado.pdf<br>
+sha256sum -c reporte.sha256
+                    </div>
+
+                    <h3 style="color: #667eea; margin: 20px 0 15px;">Operación Continua</h3>
+
+                    <strong>9. Montar y desmontar disco cifrado:</strong>
+                    <div class="cmd-code" style="margin: 10px 0;">
+# Inicio del día:<br>
+sudo cryptsetup luksOpen /dev/sda2 disco_seguro<br>
+sudo mount /dev/mapper/disco_seguro /mnt/datos_seguros<br><br>
+
+# Fin del día:<br>
+sudo umount /mnt/datos_seguros<br>
+sudo cryptsetup luksClose disco_seguro
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <p>📚 Documentación generada para el curso Sistemas Operativos - Universidad Tecnológica del Perú</p>
+            <p>Proyecto: Seguridad, Criptografía, Mecanismos de Protección, Autenticación y Gestión de Accesos</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Última actualización: 2026</p>
+        </div>
+    </div>
+</body>
+</html>
